@@ -3,7 +3,13 @@ package Main;
 import java.util.ArrayList;
 
 public class importOrder {
-	private String id, name, type;
+	private String idI,id, name, type;
+	public String getIdI() {
+		return idI;
+	}
+	public void setIdI(String idI) {
+		this.idI = idI;
+	}
 	private long price, amount;
 	public String getId() {
 		return id;
