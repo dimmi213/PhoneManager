@@ -2,7 +2,7 @@ package GiaoDien;
 
 import java.awt.EventQueue;
 import java.util.ArrayList;
-
+import java.util.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -25,6 +25,12 @@ import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 
 public class ImportOder extends JFrame {
 	private ArrayList<importOrder> list;
@@ -68,7 +74,10 @@ public class ImportOder extends JFrame {
 			});
 		}
 	}
-	
+	Connection conn = null;
+	ResultSet rs = null;
+	PreparedStatement ps = null;
+	int q;
 	public ImportOder() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1379, 847);
@@ -90,6 +99,19 @@ public class ImportOder extends JFrame {
 		contentPane.add(scrollPane);
 		
 		tableImportOrder = new JTable();
+		tableImportOrder.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				DefaultTableModel model = (DefaultTableModel)tableImportOrder.getModel();
+				int row = tableImportOrder.getSelectedRow();
+				tfProductID.setText(model.getValueAt(row, 1).toString());
+				tfName.setText(model.getValueAt(row, 2).toString());
+				tfType.setText(model.getValueAt(row, 3).toString());
+				tfPrice.setText(model.getValueAt(row, 4).toString());
+				tfAmount.setText(model.getValueAt(row, 5).toString());
+				
+			}
+		});
 		JLabel lblNewLabel = new JLabel("Product ID:");
 		lblNewLabel.setBounds(10, 93, 83, 14);
 		contentPane.add(lblNewLabel);
@@ -152,6 +174,11 @@ public class ImportOder extends JFrame {
 						list.add(i);
 						JOptionPane.showMessageDialog(rootPane, "Save Successfully");
 						showResult();
+						tfProductID.setText("");
+						tfName.setText("");
+						tfType.setText("");
+						tfPrice.setText("");
+						tfAmount.setText("");
 					} 
 					else {
 						JOptionPane.showMessageDialog(rootPane, "Product's ID cannot be duplicated!");
@@ -168,16 +195,32 @@ public class ImportOder extends JFrame {
 		JButton btnUpdate = new JButton("Update");
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int index = tableImportOrder.getSelectedRow();
-				
-				if(index>=0) {
-//					importOrder i = new importOrder();
-					model.setValueAt(tfProductID.getText(), index, 0);
-					model.setValueAt(tfName.getText(), index, 1);
-					model.setValueAt(tfType.getText(), index, 2);
-					model.setValueAt(tfPrice.getText(), index, 3);
-					model.setValueAt(tfAmount.getText(), index, 4);
-					JOptionPane.showMessageDialog(null, "Update Successfully");
+				int row = tableImportOrder.getSelectedRow();
+				if(row >=0) {
+					try {
+		
+						conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=ImportOrder;user=sa;password=1234");
+						String value =(tableImportOrder.getModel().getValueAt(row, 0).toString());
+						String query = "update tblImportOrder set Name=?,Type=?,Price=?,Amount=? where ProductID=?";
+						PreparedStatement ps = conn.prepareStatement(query);
+						ps = conn.prepareStatement(query);
+						ps.setString(5, tfProductID.getText());
+						ps.setString(1, tfName.getText());
+						ps.setString(2, tfType.getText());
+						ps.setString(3, tfPrice.getText());
+						ps.setString(4, tfAmount.getText());
+						ps.executeUpdate();
+						model.setValueAt(tfProductID.getText(), row, 1);
+						model.setValueAt(tfName.getText(), row, 2);
+						model.setValueAt(tfType.getText(), row, 3);
+						model.setValueAt(tfPrice.getText(), row, 4);
+						model.setValueAt(tfAmount.getText(), row, 5);
+						JOptionPane.showMessageDialog(null, "Update Successfully");
+						
+					} catch (Exception e2) {
+						// TODO: handle exception
+					}
+					
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Plese select a row first");
@@ -190,10 +233,24 @@ public class ImportOder extends JFrame {
 		JButton btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int i = tableImportOrder.getSelectedRow();
-				model.removeRow(i);
-				if(i>=0) {
-					JOptionPane.showMessageDialog(null, "Delete Successfully");
+				int row = tableImportOrder.getSelectedRow();
+
+				if(row>=0) {
+					try {
+						conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=ImportOrder;user=sa;password=1234");
+						String value =(tableImportOrder.getModel().getValueAt(row, 0).toString());
+						String query = "delete tblImportOrder where ProductID=?";
+						PreparedStatement ps = conn.prepareStatement(query);
+						ps = conn.prepareStatement(query);
+						ps.setString(1, tfProductID.getText());
+						ps.executeUpdate();
+						model.removeRow(row);
+						JOptionPane.showMessageDialog(null, "Delete Successfully");
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Plese select a row first");
@@ -229,7 +286,7 @@ public class ImportOder extends JFrame {
 		list = new ConnectImportOrder().getListimportOrder();
 		model = (DefaultTableModel) tableImportOrder.getModel();
 		model.setColumnIdentifiers(new Object[] {
-				"STT", "Product ID", "Name", "Type", "Price", "Amount"
+				"STT", "Product ID", "Name", "Type", "Price", "Amount", "Date"
 		});
 		showTable();
 	}
