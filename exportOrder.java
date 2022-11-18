@@ -3,8 +3,14 @@ package Main;
 import java.util.ArrayList;
 
 public class exportOrder {
-	private String id, name, type;
+	private String idE,id, name, type;
 	private long price, amount;
+	public String getIdE() {
+		return idE;
+	}
+	public void setIdE(String idE) {
+		this.idE = idE;
+	}
 	public String getId() {
 		return id;
 	}
