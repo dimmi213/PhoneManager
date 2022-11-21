@@ -3,6 +3,7 @@ package GiaoDien;
 import java.awt.EventQueue;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Vector;
 
 import javax.swing.JFrame;
@@ -27,11 +28,16 @@ import javax.swing.JScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+//import java.time.LocalDateTime;
+//import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 
 public class ExportOrder extends JFrame {
 
@@ -39,9 +45,9 @@ public class ExportOrder extends JFrame {
 	DefaultTableModel model;
 	private JPanel contentPane;
 	private JTable tableExportOrder;
-	private JTextField tfProductID;
+	private JTextField tfSKU;
+	private JTextField tfSupplierID;
 	private JTextField tfName;
-	private JTextField tfType;
 	private JTextField tfPrice;
 	private JTextField tfAmount;
 	
@@ -69,7 +75,7 @@ public class ExportOrder extends JFrame {
 	public void showTable() {
 		for(exportOrder i : list) {
 			model.addRow(new Object[] {
-					j++,i.getIdE(),i.getId(), i.getName(), i.getType(), i.getPrice(), i.getAmount()
+					j++,i.getIdE(),i.getSku(), i.getSupplierID(), i.getName(), i.getPrice(), i.getAmount(),i.getDate()
 			});
 		}
 	}
@@ -78,8 +84,11 @@ public class ExportOrder extends JFrame {
 	PreparedStatement ps = null;
 	int q;
 	public ExportOrder() {
+		Calendar calendar = Calendar.getInstance();
+		final String tfDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(calendar.getTime());
+		System.out.print(tfDate);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1379, 847);
+		setBounds(100, 100, 1485, 847);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -94,7 +103,7 @@ public class ExportOrder extends JFrame {
 		
 		scrollPane = new JScrollPane();
 		
-		scrollPane.setBounds(492, 59, 673, 548);
+		scrollPane.setBounds(441, 59, 996, 548);
 		contentPane.add(scrollPane);
 		
 		tableExportOrder = new JTable();
@@ -104,23 +113,23 @@ public class ExportOrder extends JFrame {
 				DefaultTableModel model = (DefaultTableModel)tableExportOrder.getModel();
 				int row = tableExportOrder.getSelectedRow();
 				tfExportOrderID.setText(model.getValueAt(row, 1).toString());
-				tfProductID.setText(model.getValueAt(row, 2).toString());
-				tfName.setText(model.getValueAt(row, 3).toString());
-				tfType.setText(model.getValueAt(row, 4).toString());
+				tfSKU.setText(model.getValueAt(row, 2).toString());
+				tfSupplierID.setText(model.getValueAt(row, 3).toString());
+				tfName.setText(model.getValueAt(row, 4).toString());
 				tfPrice.setText(model.getValueAt(row, 5).toString());
 				tfAmount.setText(model.getValueAt(row, 6).toString());
 				
 			}
 		});
-		JLabel lblNewLabel = new JLabel("Product ID:");
+		JLabel lblNewLabel = new JLabel("SKU:");
 		lblNewLabel.setBounds(10, 114, 83, 14);
 		contentPane.add(lblNewLabel);
 		
-		JLabel lblNewLabel_1 = new JLabel("Name:");
+		JLabel lblNewLabel_1 = new JLabel("Supplier ID:");
 		lblNewLabel_1.setBounds(10, 152, 83, 14);
 		contentPane.add(lblNewLabel_1);
 		
-		JLabel lblNewLabel_2 = new JLabel("Type:");
+		JLabel lblNewLabel_2 = new JLabel("Name:");
 		lblNewLabel_2.setBounds(10, 192, 83, 14);
 		contentPane.add(lblNewLabel_2);
 		
@@ -132,20 +141,20 @@ public class ExportOrder extends JFrame {
 		lblNewLabel_4.setBounds(10, 271, 83, 14);
 		contentPane.add(lblNewLabel_4);
 		
-		tfProductID = new JTextField();
-		tfProductID.setBounds(120, 111, 293, 20);
-		contentPane.add(tfProductID);
-		tfProductID.setColumns(10);
+		tfSKU = new JTextField();
+		tfSKU.setBounds(120, 111, 293, 20);
+		contentPane.add(tfSKU);
+		tfSKU.setColumns(10);
+		
+		tfSupplierID = new JTextField();
+		tfSupplierID.setBounds(120, 149, 293, 20);
+		contentPane.add(tfSupplierID);
+		tfSupplierID.setColumns(10);
 		
 		tfName = new JTextField();
-		tfName.setBounds(120, 149, 293, 20);
+		tfName.setBounds(120, 189, 293, 20);
 		contentPane.add(tfName);
 		tfName.setColumns(10);
-		
-		tfType = new JTextField();
-		tfType.setBounds(120, 189, 293, 20);
-		contentPane.add(tfType);
-		tfType.setColumns(10);
 		
 		tfPrice = new JTextField();
 		tfPrice.setBounds(120, 227, 293, 20);
@@ -157,28 +166,35 @@ public class ExportOrder extends JFrame {
 		contentPane.add(tfAmount);
 		tfAmount.setColumns(10);
 		
+//		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
+//		LocalDateTime now = LocalDateTime.now();  
+//		String tfDate =dtf.format(now);
+		
 		JButton btnAdd = new JButton("Add");
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(tfExportOrderID.getText().equals("") || tfProductID.getText().equals("") || tfName.getText().equals("") || tfType.getText().equals("") || tfPrice.getText().equals("") || tfAmount.getText().equals("")) {
+				if(tfExportOrderID.getText().equals("") || tfSKU.getText().equals("") || tfSupplierID.getText().equals("") || tfName.getText().equals("") || tfPrice.getText().equals("") || tfAmount.getText().equals("")) {
 					JOptionPane.showMessageDialog(rootPane, "Please fill complete information");
 				}
 				else {
+					Calendar calendar = Calendar.getInstance();
+					final String tfDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(calendar.getTime());
 					exportOrder i = new exportOrder();
 					i.setIdE(tfExportOrderID.getText());
-					i.setId(tfProductID.getText());
+					i.setSku(tfSKU.getText());
+					i.setSupplierID(tfSupplierID.getText());
 					i.setName(tfName.getText());
-					i.setType(tfType.getText());
 					i.setPrice(Long.parseLong(tfPrice.getText()) );
 					i.setAmount(Long.parseLong(tfAmount.getText()));
+					i.setDate(tfDate);
 					if(new ConnectExportOrder().addProducts(i)) {
 						list.add(i);
 						JOptionPane.showMessageDialog(rootPane, "Save Successfully");
 						showResult();
 						tfExportOrderID.setText("");
-						tfProductID.setText("");
+						tfSKU.setText("");
+						tfSupplierID.setText("");
 						tfName.setText("");
-						tfType.setText("");
 						tfPrice.setText("");
 						tfAmount.setText("");
 					} 
@@ -201,25 +217,28 @@ public class ExportOrder extends JFrame {
 				int row = tableExportOrder.getSelectedRow();
 				if(row >=0) {
 					try {
-		
+						Calendar calendar = Calendar.getInstance();
+						final String tfDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(calendar.getTime());
 						conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=ExportOrder;user=sa;password=1234");
 						String value =(tableExportOrder.getModel().getValueAt(row, 0).toString());
-						String query = "update tblExportOrder set ProductID=?,Name=?,Type=?,Price=?,Amount=? where ExportOrderID=?";
+						String query = "update tblExportOrder set SKU=?,SupplierID=?,Name=?,Price=?,Amount=?,Date=? where ExportOrderID=?";
 						PreparedStatement ps = conn.prepareStatement(query);
 						ps = conn.prepareStatement(query);
-						ps.setString(6, tfExportOrderID.getText());
-						ps.setString(1, tfProductID.getText());
-						ps.setString(2, tfName.getText());
-						ps.setString(3, tfType.getText());
+						ps.setString(7, tfExportOrderID.getText());
+						ps.setString(1, tfSKU.getText());
+						ps.setString(2, tfSupplierID.getText());
+						ps.setString(3, tfName.getText());
 						ps.setString(4, tfPrice.getText());
 						ps.setString(5, tfAmount.getText());
+						ps.setString(6, tfDate);
 						ps.executeUpdate();
 						model.setValueAt(tfExportOrderID.getText(), row, 1);
-						model.setValueAt(tfProductID.getText(), row, 2);
-						model.setValueAt(tfName.getText(), row, 3);
-						model.setValueAt(tfType.getText(), row, 4);
+						model.setValueAt(tfSKU.getText(), row, 2);
+						model.setValueAt(tfSupplierID.getText(), row, 3);
+						model.setValueAt(tfName.getText(), row, 4);
 						model.setValueAt(tfPrice.getText(), row, 5);
 						model.setValueAt(tfAmount.getText(), row, 6);
+						model.setValueAt(tfDate, row, 7);
 						JOptionPane.showMessageDialog(null, "Update Successfully");
 						
 					} catch (Exception e2) {
@@ -269,9 +288,9 @@ public class ExportOrder extends JFrame {
 		btnClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tfExportOrderID.setText("");
-				tfProductID.setText("");
+				tfSKU.setText("");
+				tfSupplierID.setText("");
 				tfName.setText("");
-				tfType.setText("");
 				tfPrice.setText("");
 				tfAmount.setText("");
 			}
@@ -301,7 +320,7 @@ public class ExportOrder extends JFrame {
 		list = new ConnectExportOrder().getListexportOrder();
 		model = (DefaultTableModel) tableExportOrder.getModel();
 		model.setColumnIdentifiers(new Object[] {
-				"STT", "ID","Product ID", "Name", "Type", "Price", "Amount", "Date"
+				"STT", "ID","SKU","Supplier ID", "Name", "Price", "Amount", "Date"
 		});
 		showTable();
 	}
@@ -311,7 +330,7 @@ public class ExportOrder extends JFrame {
 	public void showResult() {
 		exportOrder i = list.get(list.size() -1 );
 		model.addRow(new Object[] {
-				j++,i.getIdE(),i.getId(), i.getName(), i.getType(), i.getPrice(), i.getAmount()
+				j++,i.getIdE(),i.getSku(), i.getSupplierID(), i.getName(), i.getPrice(), i.getAmount(),i.getDate()
 		});
 	}
 }
