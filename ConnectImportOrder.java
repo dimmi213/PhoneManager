@@ -28,8 +28,8 @@ public class ConnectImportOrder {
 		System.out.print(conn);
 	}
 	public boolean addProducts(importOrder i) {
-		String sql = "INSERT INTO tblImportOrder(ImportOrderID,SKU,SupplierID, Name, Price, Amount)"
-				+ "VALUES(?,?,?,?,?,?)";
+		String sql = "INSERT INTO tblImportOrder(ImportOrderID,SKU,SupplierID, Name, Price, Amount,Date)"
+				+ "VALUES(?,?,?,?,?,?,?)";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, i.getIdI());
@@ -38,6 +38,7 @@ public class ConnectImportOrder {
 			ps.setString(4, i.getName());
 			ps.setLong(5, i.getPrice());
 			ps.setLong(6, i.getAmount());
+			ps.setString(7, i.getDate());
 //			ps.setLong(6, getDate);
 			return  ps.executeUpdate() > 0;
 		} catch (Exception e) {
@@ -63,7 +64,7 @@ public class ConnectImportOrder {
             	i.setName(rs.getString("Name"));
             	i.setPrice(rs.getLong("Price"));
             	i.setAmount(rs.getLong("Amount"));
-            	
+            	i.setDate(rs.getString("Date"));
             	list.add(i);
             }
 		} catch (Exception e) {
