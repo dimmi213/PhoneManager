@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+//import java.time.LocalDateTime;
+//import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Vector;
 import Main.exportOrder;
@@ -25,17 +27,17 @@ public class ConnectExportOrder {
 		System.out.print(conn);
 	}
 	public boolean addProducts(exportOrder i) {
-		String sql = "INSERT INTO tblExportOrder(ExportOrderID,ProductID, Name, Type, Price, Amount)"
-				+ "VALUES(?,?,?,?,?,?)";
+		String sql = "INSERT INTO tblExportOrder(ExportOrderID,SKU,SupplierID, Name, Price, Amount,Date)"
+				+ "VALUES(?,?,?,?,?,?,?)";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, i.getIdE());
-			ps.setString(2, i.getId());
-			ps.setString(3, i.getName());
-			ps.setString(4, i.getType());
+			ps.setString(2, i.getSku());
+			ps.setString(3, i.getSupplierID());
+			ps.setString(4, i.getName());
 			ps.setLong(5, i.getPrice());
 			ps.setLong(6, i.getAmount());
-//			ps.setLong(6, getDate);
+			ps.setString(7, i.getDate());
 			return  ps.executeUpdate() > 0;
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -55,12 +57,12 @@ public class ConnectExportOrder {
             while(rs.next()) {
             	exportOrder i = new exportOrder();
             	i.setIdE(rs.getString("ExportOrderID"));
-            	i.setId(rs.getString("ProductID"));
-            	i.setName(rs.getString("Name"));
-            	i.setType(rs.getString("Type"));
+            	i.setSku(rs.getString("ProductID"));
+            	i.setSupplierID(rs.getString("Name"));
+            	i.setName(rs.getString("Type"));
             	i.setPrice(rs.getLong("Price"));
             	i.setAmount(rs.getLong("Amount"));
-            	
+            	i.setDate(rs.getString("Date"));
             	list.add(i);
             }
 		} catch (Exception e) {
