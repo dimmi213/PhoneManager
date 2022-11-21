@@ -2,6 +2,7 @@ package GiaoDien;
 
 import java.awt.EventQueue;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Vector;
 
 import javax.swing.JFrame;
@@ -31,6 +32,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 
 public class ImportOder extends JFrame {
 	private ArrayList<importOrder> list;
@@ -70,7 +72,7 @@ public class ImportOder extends JFrame {
 	public void showTable() {
 		for(importOrder i : list) {
 			model.addRow(new Object[] {
-					j++,i.getIdI(),i.getSku(), i.getSupplierID(), i.getName(), i.getPrice(), i.getAmount()
+					j++,i.getIdI(),i.getSku(), i.getSupplierID(), i.getName(), i.getPrice(), i.getAmount(), i.getDate()
 			});
 		}
 	}
@@ -79,8 +81,11 @@ public class ImportOder extends JFrame {
 	PreparedStatement ps = null;
 	int q;
 	public ImportOder() {
+		Calendar calendar = Calendar.getInstance();
+		final String tfDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(calendar.getTime());
+		System.out.print(tfDate);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1379, 847);
+		setBounds(100, 100, 1520, 847);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -95,7 +100,7 @@ public class ImportOder extends JFrame {
 		
 		scrollPane = new JScrollPane();
 		
-		scrollPane.setBounds(492, 59, 673, 548);
+		scrollPane.setBounds(492, 59, 978, 698);
 		contentPane.add(scrollPane);
 		
 		tableImportOrder = new JTable();
@@ -165,6 +170,9 @@ public class ImportOder extends JFrame {
 					JOptionPane.showMessageDialog(rootPane, "Please fill complete information");
 				}
 				else {
+					Calendar calendar = Calendar.getInstance();
+					final String tfDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(calendar.getTime());
+					System.out.print(tfDate);
 					importOrder i = new importOrder();
 					i.setIdI(tfImportOrderID.getText());
 					i.setSku(tfSKU.getText());
@@ -172,6 +180,7 @@ public class ImportOder extends JFrame {
 					i.setName(tfName.getText());
 					i.setPrice(Long.parseLong(tfPrice.getText()) );
 					i.setAmount(Long.parseLong(tfAmount.getText()));
+					i.setDate(tfDate);
 					if(new ConnectImportOrder().addProducts(i)) {
 						list.add(i);
 						JOptionPane.showMessageDialog(rootPane, "Save Successfully");
@@ -201,18 +210,20 @@ public class ImportOder extends JFrame {
 				int row = tableImportOrder.getSelectedRow();
 				if(row >=0) {
 					try {
-		
+						Calendar calendar = Calendar.getInstance();
+						final String tfDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(calendar.getTime());
 						conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=ImportOrder;user=sa;password=1234");
 						String value =(tableImportOrder.getModel().getValueAt(row, 0).toString());
-						String query = "update tblImportOrder set SKU=?,SupplierID=?,Name=?,Price=?,Amount=? where ImportOrderID=?";
+						String query = "update tblImportOrder set SKU=?,SupplierID=?,Name=?,Price=?,Amount=?,Date=? where ImportOrderID=?";
 						PreparedStatement ps = conn.prepareStatement(query);
 						ps = conn.prepareStatement(query);
-						ps.setString(6, tfImportOrderID.getText());
+						ps.setString(7, tfImportOrderID.getText());
 						ps.setString(1, tfSKU.getText());
 						ps.setString(2, tfSupplierID.getText());
 						ps.setString(3, tfName.getText());
 						ps.setString(4, tfPrice.getText());
 						ps.setString(5, tfAmount.getText());
+						ps.setString(6, tfDate);
 						ps.executeUpdate();
 						model.setValueAt(tfImportOrderID.getText(), row, 1);
 						model.setValueAt(tfSKU.getText(), row, 2);
@@ -220,6 +231,7 @@ public class ImportOder extends JFrame {
 						model.setValueAt(tfName.getText(), row, 4);
 						model.setValueAt(tfPrice.getText(), row, 5);
 						model.setValueAt(tfAmount.getText(), row, 6);
+						model.setValueAt(tfDate, row, 7);
 						JOptionPane.showMessageDialog(null, "Update Successfully");
 						
 					} catch (Exception e2) {
@@ -310,7 +322,7 @@ public class ImportOder extends JFrame {
 	public void showResult() {
 		importOrder i = list.get(list.size() -1 );
 		model.addRow(new Object[] {
-				j++,i.getIdI(),i.getSku(), i.getSupplierID(),i.getName(), i.getPrice(), i.getAmount()
+				j++,i.getIdI(),i.getSku(), i.getSupplierID(),i.getName(), i.getPrice(), i.getAmount(), i.getDate()
 		});
 	}
 }
