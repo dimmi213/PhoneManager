@@ -3,7 +3,7 @@ package Main;
 import java.util.ArrayList;
 
 public class importOrder {
-	private String idI,id, name, type;
+	private String idI,sku,supplierID, name;
 	public String getIdI() {
 		return idI;
 	}
@@ -11,23 +11,24 @@ public class importOrder {
 		this.idI = idI;
 	}
 	private long price, amount;
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
+	
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getType() {
-		return type;
+	public String getSku() {
+		return sku;
 	}
-	public void setType(String type) {
-		this.type = type;
+	public void setSku(String sku) {
+		this.sku = sku;
+	}
+	public String getSupplierID() {
+		return supplierID;
+	}
+	public void setSupplierID(String supplierID) {
+		this.supplierID = supplierID;
 	}
 	public long getPrice() {
 		return price;
