@@ -28,14 +28,14 @@ public class ConnectImportOrder {
 		System.out.print(conn);
 	}
 	public boolean addProducts(importOrder i) {
-		String sql = "INSERT INTO tblImportOrder(ImportOrderID,ProductID, Name, Type, Price, Amount)"
+		String sql = "INSERT INTO tblImportOrder(ImportOrderID,SKU,SupplierID, Name, Price, Amount)"
 				+ "VALUES(?,?,?,?,?,?)";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, i.getIdI());
-			ps.setString(2, i.getId());
-			ps.setString(3, i.getName());
-			ps.setString(4, i.getType());
+			ps.setString(2, i.getSku());
+			ps.setString(3, i.getSupplierID());
+			ps.setString(4, i.getName());
 			ps.setLong(5, i.getPrice());
 			ps.setLong(6, i.getAmount());
 //			ps.setLong(6, getDate);
@@ -58,9 +58,9 @@ public class ConnectImportOrder {
             while(rs.next()) {
             	importOrder i = new importOrder();
             	i.setIdI(rs.getString("ImportOrderID"));
-            	i.setId(rs.getString("ProductID"));
+            	i.setSku(rs.getString("SKU"));
+            	i.setSupplierID(rs.getString("SupplierID"));
             	i.setName(rs.getString("Name"));
-            	i.setType(rs.getString("Type"));
             	i.setPrice(rs.getLong("Price"));
             	i.setAmount(rs.getLong("Amount"));
             	
