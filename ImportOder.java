@@ -37,9 +37,9 @@ public class ImportOder extends JFrame {
 	DefaultTableModel model;
 	private JPanel contentPane;
 	private JTable tableImportOrder;
-	private JTextField tfProductID;
+	private JTextField tfSKU;
+	private JTextField tfSupplierID;
 	private JTextField tfName;
-	private JTextField tfType;
 	private JTextField tfPrice;
 	private JTextField tfAmount;
 	
@@ -70,7 +70,7 @@ public class ImportOder extends JFrame {
 	public void showTable() {
 		for(importOrder i : list) {
 			model.addRow(new Object[] {
-					j++,i.getIdI(),i.getId(), i.getName(), i.getType(), i.getPrice(), i.getAmount()
+					j++,i.getIdI(),i.getSku(), i.getSupplierID(), i.getName(), i.getPrice(), i.getAmount()
 			});
 		}
 	}
@@ -105,23 +105,23 @@ public class ImportOder extends JFrame {
 				DefaultTableModel model = (DefaultTableModel)tableImportOrder.getModel();
 				int row = tableImportOrder.getSelectedRow();
 				tfImportOrderID.setText(model.getValueAt(row, 1).toString());
-				tfProductID.setText(model.getValueAt(row, 2).toString());
-				tfName.setText(model.getValueAt(row, 3).toString());
-				tfType.setText(model.getValueAt(row, 4).toString());
+				tfSKU.setText(model.getValueAt(row, 2).toString());
+				tfSupplierID.setText(model.getValueAt(row, 3).toString());
+				tfName.setText(model.getValueAt(row, 4).toString());
 				tfPrice.setText(model.getValueAt(row, 5).toString());
 				tfAmount.setText(model.getValueAt(row, 6).toString());
 				
 			}
 		});
-		JLabel lblNewLabel = new JLabel("Product ID:");
+		JLabel lblNewLabel = new JLabel("SKU:");
 		lblNewLabel.setBounds(10, 123, 83, 14);
 		contentPane.add(lblNewLabel);
 		
-		JLabel lblNewLabel_1 = new JLabel("Name:");
+		JLabel lblNewLabel_1 = new JLabel("Supplier ID:");
 		lblNewLabel_1.setBounds(10, 161, 83, 14);
 		contentPane.add(lblNewLabel_1);
 		
-		JLabel lblNewLabel_2 = new JLabel("Type:");
+		JLabel lblNewLabel_2 = new JLabel("Name:");
 		lblNewLabel_2.setBounds(10, 201, 83, 14);
 		contentPane.add(lblNewLabel_2);
 		
@@ -133,20 +133,20 @@ public class ImportOder extends JFrame {
 		lblNewLabel_4.setBounds(10, 280, 83, 14);
 		contentPane.add(lblNewLabel_4);
 		
-		tfProductID = new JTextField();
-		tfProductID.setBounds(120, 120, 293, 20);
-		contentPane.add(tfProductID);
-		tfProductID.setColumns(10);
+		tfSKU = new JTextField();
+		tfSKU.setBounds(120, 120, 293, 20);
+		contentPane.add(tfSKU);
+		tfSKU.setColumns(10);
+		
+		tfSupplierID = new JTextField();
+		tfSupplierID.setBounds(120, 158, 293, 20);
+		contentPane.add(tfSupplierID);
+		tfSupplierID.setColumns(10);
 		
 		tfName = new JTextField();
-		tfName.setBounds(120, 158, 293, 20);
+		tfName.setBounds(120, 198, 293, 20);
 		contentPane.add(tfName);
 		tfName.setColumns(10);
-		
-		tfType = new JTextField();
-		tfType.setBounds(120, 198, 293, 20);
-		contentPane.add(tfType);
-		tfType.setColumns(10);
 		
 		tfPrice = new JTextField();
 		tfPrice.setBounds(120, 236, 293, 20);
@@ -161,15 +161,15 @@ public class ImportOder extends JFrame {
 		JButton btnAdd = new JButton("Add");
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(tfImportOrderID.getText().equals("") || tfProductID.getText().equals("") || tfName.getText().equals("") || tfType.getText().equals("") || tfPrice.getText().equals("") || tfAmount.getText().equals("")) {
+				if(tfImportOrderID.getText().equals("") || tfSKU.getText().equals("") || tfSupplierID.getText().equals("") || tfName.getText().equals("") || tfPrice.getText().equals("") || tfAmount.getText().equals("")) {
 					JOptionPane.showMessageDialog(rootPane, "Please fill complete information");
 				}
 				else {
 					importOrder i = new importOrder();
 					i.setIdI(tfImportOrderID.getText());
-					i.setId(tfProductID.getText());
+					i.setSku(tfSKU.getText());
+					i.setSupplierID(tfSupplierID.getText());
 					i.setName(tfName.getText());
-					i.setType(tfType.getText());
 					i.setPrice(Long.parseLong(tfPrice.getText()) );
 					i.setAmount(Long.parseLong(tfAmount.getText()));
 					if(new ConnectImportOrder().addProducts(i)) {
@@ -177,9 +177,9 @@ public class ImportOder extends JFrame {
 						JOptionPane.showMessageDialog(rootPane, "Save Successfully");
 						showResult();
 						tfImportOrderID.setText("");
-						tfProductID.setText("");
+						tfSKU.setText("");
+						tfSupplierID.setText("");
 						tfName.setText("");
-						tfType.setText("");
 						tfPrice.setText("");
 						tfAmount.setText("");
 					} 
@@ -204,20 +204,20 @@ public class ImportOder extends JFrame {
 		
 						conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=ImportOrder;user=sa;password=1234");
 						String value =(tableImportOrder.getModel().getValueAt(row, 0).toString());
-						String query = "update tblImportOrder set ProductID=?,Name=?,Type=?,Price=?,Amount=? where ImportOrderID=?";
+						String query = "update tblImportOrder set SKU=?,SupplierID=?,Name=?,Price=?,Amount=? where ImportOrderID=?";
 						PreparedStatement ps = conn.prepareStatement(query);
 						ps = conn.prepareStatement(query);
 						ps.setString(6, tfImportOrderID.getText());
-						ps.setString(1, tfProductID.getText());
-						ps.setString(2, tfName.getText());
-						ps.setString(3, tfType.getText());
+						ps.setString(1, tfSKU.getText());
+						ps.setString(2, tfSupplierID.getText());
+						ps.setString(3, tfName.getText());
 						ps.setString(4, tfPrice.getText());
 						ps.setString(5, tfAmount.getText());
 						ps.executeUpdate();
 						model.setValueAt(tfImportOrderID.getText(), row, 1);
-						model.setValueAt(tfProductID.getText(), row, 2);
-						model.setValueAt(tfName.getText(), row, 3);
-						model.setValueAt(tfType.getText(), row, 4);
+						model.setValueAt(tfSKU.getText(), row, 2);
+						model.setValueAt(tfSupplierID.getText(), row, 3);
+						model.setValueAt(tfName.getText(), row, 4);
 						model.setValueAt(tfPrice.getText(), row, 5);
 						model.setValueAt(tfAmount.getText(), row, 6);
 						JOptionPane.showMessageDialog(null, "Update Successfully");
@@ -269,9 +269,9 @@ public class ImportOder extends JFrame {
 		btnClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				tfImportOrderID.setText("");
-				tfProductID.setText("");
+				tfSKU.setText("");
+				tfSupplierID.setText("");
 				tfName.setText("");
-				tfType.setText("");
 				tfPrice.setText("");
 				tfAmount.setText("");
 			}
@@ -301,7 +301,7 @@ public class ImportOder extends JFrame {
 		list = new ConnectImportOrder().getListimportOrder();
 		model = (DefaultTableModel) tableImportOrder.getModel();
 		model.setColumnIdentifiers(new Object[] {
-				"STT", "ID","Product ID", "Name", "Type", "Price", "Amount", "Date"
+				"STT", "ID","SKU", "SupplierID", "Name", "Price", "Amount", "Date"
 		});
 		showTable();
 	}
@@ -310,7 +310,7 @@ public class ImportOder extends JFrame {
 	public void showResult() {
 		importOrder i = list.get(list.size() -1 );
 		model.addRow(new Object[] {
-				j++,i.getIdI(),i.getId(), i.getName(), i.getType(), i.getPrice(), i.getAmount()
+				j++,i.getIdI(),i.getSku(), i.getSupplierID(),i.getName(), i.getPrice(), i.getAmount()
 		});
 	}
 }
