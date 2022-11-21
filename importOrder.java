@@ -3,7 +3,13 @@ package Main;
 import java.util.ArrayList;
 
 public class importOrder {
-	private String idI,sku,supplierID, name;
+	private String idI,sku,supplierID, name,date;
+	public String getDate() {
+		return date;
+	}
+	public void setDate(String date) {
+		this.date = date;
+	}
 	public String getIdI() {
 		return idI;
 	}
