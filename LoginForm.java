@@ -9,30 +9,25 @@ import javax.swing.border.EmptyBorder;
 import Menu.AdminPage;
 import Menu.EUserPage;
 import Menu.IUserPage;
-import Menu.UserPage;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import java.awt.Font;
-import java.awt.Menu;
-
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JCheckBox;
 import javax.swing.JSeparator;
 import java.awt.event.ActionListener;
-import java.security.DomainLoadStoreParameter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 
+@SuppressWarnings("serial")
 public class LoginForm extends JFrame {
 
 	private JPanel contentPane;
@@ -129,42 +124,34 @@ public class LoginForm extends JFrame {
                     Connection connection = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/usermanagement",
                         "root", "yunbrayyunh");
 
-                    PreparedStatement sta = (PreparedStatement) connection
-                        .prepareStatement("Select Username, Password from admin where Username = ? and Password = ?");
-                    PreparedStatement sti_u = (PreparedStatement) connection
-                            .prepareStatement("Select Username, Password from import_user where Username = ? and Password = ?");
-                    PreparedStatement ste_u = (PreparedStatement) connection
-                            .prepareStatement("Select Username, Password from export_user where Username = ? and Password = ?");
-                    sta.setString(1, username);
-                    sta.setString(2, password);
-                    sti_u.setString(1, username);
-                    sti_u.setString(2, password);
-                    ste_u.setString(1, username);
-                    ste_u.setString(2, password);
+                    PreparedStatement st = (PreparedStatement) connection
+                        .prepareStatement("Select Username, Password from user where Username = ? and Password = ?");
                     
-                    ResultSet rsa = sta.executeQuery();
-                    ResultSet rsi_u = sti_u.executeQuery();
-                    ResultSet rse_u = ste_u.executeQuery();
+                    st.setString(1, username);
+                    st.setString(2, password);
+
+                    ResultSet rs = st.executeQuery();
                     
-                    if (rsa.next()) {
+                    
+                    if (rs.next()) {
                         dispose();
-                        AdminPage ah = new AdminPage();
-                        ah.setTitle("Welcome");
-                        ah.setVisible(true);
-                    }else if (rsi_u.next()) {
-                        dispose();
-                        IUserPage ah = new IUserPage();
-                        ah.setTitle("Welcome");
-                        ah.setVisible(true);
-                    }else if (rse_u.next()) {
-                        dispose();
-                        EUserPage ah = new EUserPage();
-                        ah.setTitle("Welcome");
-                        ah.setVisible(true);
+                        if (username.equals("Admin")) {
+                        	AdminPage ah = new AdminPage();
+                            ah.setTitle("Welcome");
+                            ah.setVisible(true);
+						}else if (username.equals("Import_user")){
+                        	IUserPage ah = new IUserPage();
+                            ah.setTitle("Welcome");
+                            ah.setVisible(true);
+						}else if (username.equals("Emport_user")) {
+							EUserPage ah = new EUserPage();
+	                        ah.setTitle("Welcome");
+	                        ah.setVisible(true);
+						}
                     }
                     else {
                         JOptionPane.showMessageDialog(frame, "Wrong Username & Password");
-                    }
+                    	}
                     } catch (SQLException e1) {
 					e1.printStackTrace();
 				}
