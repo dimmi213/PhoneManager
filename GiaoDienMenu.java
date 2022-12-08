@@ -6,6 +6,10 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import UserManagement.LoginForm;
+import UserManagement.Manager;
+
 import java.awt.Color;
 import javax.swing.JTextField;
 import java.awt.Font;
@@ -44,7 +48,7 @@ public class GiaoDienMenu extends JFrame {
 	 */
 	public GiaoDienMenu() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 539, 404);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -69,7 +73,7 @@ public class GiaoDienMenu extends JFrame {
 		ButtonProduct.setBackground(new Color(192, 192, 192));
 		ButtonProduct.setForeground(new Color(0, 0, 0));
 		ButtonProduct.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
-		ButtonProduct.setBounds(10, 101, 150, 53);
+		ButtonProduct.setBounds(52, 101, 150, 53);
 		contentPane.add(ButtonProduct);
 		
 		JButton ButtonSupplier = new JButton("SUPPLIER");
@@ -87,7 +91,7 @@ public class GiaoDienMenu extends JFrame {
 		ButtonSupplier.setHorizontalAlignment(SwingConstants.LEFT);
 		ButtonSupplier.setBackground(new Color(192, 192, 192));
 		ButtonSupplier.setActionCommand("");
-		ButtonSupplier.setBounds(251, 101, 150, 53);
+		ButtonSupplier.setBounds(293, 101, 150, 53);
 		contentPane.add(ButtonSupplier);
 		
 		JButton ButtonOrder = new JButton("ORDER");
@@ -104,15 +108,45 @@ public class GiaoDienMenu extends JFrame {
 		ButtonOrder.setHorizontalAlignment(SwingConstants.LEFT);
 		ButtonOrder.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
 		ButtonOrder.setBackground(new Color(192, 192, 192));
-		ButtonOrder.setBounds(142, 184, 150, 53);
+		ButtonOrder.setBounds(52, 188, 150, 53);
 		contentPane.add(ButtonOrder);
 		
 		JLabel LabelPhoneManager = new JLabel("PHONE MANAGER");
 		LabelPhoneManager.setForeground(new Color(0, 0, 0));
 		LabelPhoneManager.setHorizontalAlignment(SwingConstants.CENTER);
 		LabelPhoneManager.setFont(new Font("Algerian", Font.BOLD, 28));
-		LabelPhoneManager.setBounds(74, 11, 282, 58);
+		LabelPhoneManager.setBounds(112, 11, 282, 58);
 		contentPane.add(LabelPhoneManager);
+		
+		JButton btnUserManagerment = new JButton("UserManagerment");
+		btnUserManagerment.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				new Manager().setVisible(true);
+			}
+		});
+		btnUserManagerment.setMinimumSize(new Dimension(42, 10));
+		btnUserManagerment.setMaximumSize(new Dimension(59, 17));
+		btnUserManagerment.setMargin(new Insets(0, 0, 0, 6));
+		btnUserManagerment.setHorizontalAlignment(SwingConstants.LEFT);
+		btnUserManagerment.setForeground(Color.BLACK);
+		btnUserManagerment.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
+		btnUserManagerment.setBackground(Color.LIGHT_GRAY);
+		btnUserManagerment.setBounds(294, 188, 185, 53);
+		contentPane.add(btnUserManagerment);
+		
+		JButton btnBack = new JButton("BACK");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				new LoginForm().setVisible(true);
+			}
+		});
+		btnBack.setMargin(new Insets(0, 0, 0, 2));
+		btnBack.setHorizontalAlignment(SwingConstants.LEFT);
+		btnBack.setFont(new Font("Bookman Old Style", Font.BOLD, 15));
+		btnBack.setBackground(Color.LIGHT_GRAY);
+		btnBack.setBounds(201, 285, 85, 43);
+		contentPane.add(btnBack);
 	}
-
 }
