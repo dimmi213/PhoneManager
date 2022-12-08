@@ -4,12 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 //import java.time.LocalDateTime;
 //import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Vector;
 import Main.exportOrder;
 
 public class ConnectExportOrder {
@@ -18,8 +16,8 @@ public class ConnectExportOrder {
 	int q;
 	public ConnectExportOrder() {
 		try {
-			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-			conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=ExportOrder;user=sa;password=1234");
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			conn = DriverManager.getConnection("jdbc:mySQL://localhost:3306/exportorder","root","yunbrayyunh");
 		} catch (ClassNotFoundException | SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -57,9 +55,9 @@ public class ConnectExportOrder {
             while(rs.next()) {
             	exportOrder i = new exportOrder();
             	i.setIdE(rs.getString("ExportOrderID"));
-            	i.setSku(rs.getString("ProductID"));
-            	i.setSupplierID(rs.getString("Name"));
-            	i.setName(rs.getString("Type"));
+            	i.setSku(rs.getString("SKU"));
+            	i.setSupplierID(rs.getString("SupplierID"));
+            	i.setName(rs.getString("Name"));
             	i.setPrice(rs.getLong("Price"));
             	i.setAmount(rs.getLong("Amount"));
             	i.setDate(rs.getString("Date"));
