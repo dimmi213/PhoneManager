@@ -4,8 +4,6 @@ import java.awt.EventQueue;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Vector;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -14,7 +12,6 @@ import javax.swing.table.DefaultTableModel;
 import Connection.ConnectExportOrder;
 import Main.exportOrder;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
@@ -28,15 +25,10 @@ import javax.swing.JScrollPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-//import java.time.LocalDateTime;
-//import java.time.format.DateTimeFormatter;
 import java.text.SimpleDateFormat;
 
 public class ExportOrder extends JFrame {
@@ -178,6 +170,12 @@ public class ExportOrder extends JFrame {
 				}
 				else {
 					Calendar calendar = Calendar.getInstance();
+					try {
+						Class.forName("com.mysql.cj.jdbc.Driver");
+					} catch (ClassNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					final String tfDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(calendar.getTime());
 					exportOrder i = new exportOrder();
 					i.setIdE(tfExportOrderID.getText());
@@ -219,7 +217,7 @@ public class ExportOrder extends JFrame {
 					try {
 						Calendar calendar = Calendar.getInstance();
 						final String tfDate = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(calendar.getTime());
-						conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=ExportOrder;user=sa;password=1234");
+						conn = DriverManager.getConnection("jdbc:mySQL://localhost:3306/exportorder","root","yunbrayyunh");
 						String value =(tableExportOrder.getModel().getValueAt(row, 0).toString());
 						String query = "update tblExportOrder set SKU=?,SupplierID=?,Name=?,Price=?,Amount=?,Date=? where ExportOrderID=?";
 						PreparedStatement ps = conn.prepareStatement(query);
@@ -261,9 +259,10 @@ public class ExportOrder extends JFrame {
 
 				if(row>=0) {
 					try {
-						conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=ExportOrder;user=sa;password=1234");
+						Class.forName("com.mysql.cj.jdbc.Driver");
+						conn = DriverManager.getConnection("jdbc:mySQL://localhost:3306/exportorder","root","yunbrayyunh");
 						String value =(tableExportOrder.getModel().getValueAt(row, 0).toString());
-						String query = "delete tblExportOrder where ExportOrderID=?";
+						String query = "delete from tblexportorder where ExportOrderID=?";
 						PreparedStatement ps = conn.prepareStatement(query);
 						ps = conn.prepareStatement(query);
 						ps.setString(1, tfExportOrderID.getText());
@@ -271,6 +270,9 @@ public class ExportOrder extends JFrame {
 						model.removeRow(row);
 						JOptionPane.showMessageDialog(null, "Delete Successfully");
 					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (ClassNotFoundException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
@@ -316,6 +318,16 @@ public class ExportOrder extends JFrame {
 			tfExportOrderID.setBounds(120, 70, 293, 20);
 			contentPane.add(tfExportOrderID);
 			tfExportOrderID.setColumns(10);
+			
+			JButton btnBack = new JButton("Back");
+			btnBack.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					setVisible(false);
+					new Order().setVisible(true);
+				}
+			});
+			btnBack.setBounds(118, 448, 89, 23);
+			contentPane.add(btnBack);
 		this.setLocationRelativeTo(null);
 		list = new ConnectExportOrder().getListexportOrder();
 		model = (DefaultTableModel) tableExportOrder.getModel();
