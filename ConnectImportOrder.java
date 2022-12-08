@@ -4,11 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Vector;
-
 import Main.importOrder;
 
 //import GiaoDien.ImportOrder;
@@ -19,8 +16,8 @@ public class ConnectImportOrder {
 	int q;
 	public ConnectImportOrder() {
 		try {
-			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-			conn = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=ImportOrder;user=sa;password=1234");
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			conn = DriverManager.getConnection("jdbc:mySQL://localhost:3306/importorder","root","yunbrayyunh");
 		} catch (ClassNotFoundException | SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -28,7 +25,7 @@ public class ConnectImportOrder {
 		System.out.print(conn);
 	}
 	public boolean addProducts(importOrder i) {
-		String sql = "INSERT INTO tblImportOrder(ImportOrderID,SKU,SupplierID, Name, Price, Amount,Date)"
+		String sql = "INSERT INTO tblimportorder(ImportOrderID,SKU,SupplierID, Name, Price, Amount,Date)"
 				+ "VALUES(?,?,?,?,?,?,?)";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -52,7 +49,7 @@ public class ConnectImportOrder {
 	
 	public ArrayList<importOrder>getListimportOrder(){
 		ArrayList<importOrder> list = new ArrayList <>();
-		String sql = "SELECT * FROM tblImportOrder";
+		String sql = "SELECT * FROM tblimportorder";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
